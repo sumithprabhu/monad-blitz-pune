@@ -21,7 +21,8 @@ interface Step {
   status: StepStatus;
   tone?: Tone;
   message?: string;
-  txHash?: `0x${string}`;
+  detail?: string;
+  txHashes?: { label: string; hash: `0x${string}` }[];
 }
 
 const PLAN = [
@@ -64,10 +65,13 @@ export function DemoPanel() {
       });
       await publicClient.waitForTransactionReceipt({ hash: fundHash });
 
+      const perTxCap = parseUsdc("20");
+      const dailyCap = parseUsdc("100");
+      const approvalThreshold = parseUsdc("10");
       const policy = {
-        perTxCap: parseUsdc("20"),
-        dailyCap: parseUsdc("100"),
-        approvalThreshold: parseUsdc("10"),
+        perTxCap,
+        dailyCap,
+        approvalThreshold,
         validAfter: 0n,
         validUntil: 0n,
         whitelistOnly: false,
@@ -79,7 +83,16 @@ export function DemoPanel() {
         args: [agentAccount.address, policy],
       });
       await publicClient.waitForTransactionReceipt({ hash: regHash });
-      updateStep(0, { status: "success", tone: "success", message: `agent ${shortAddress(agentAccount.address)} registered`, txHash: regHash });
+      updateStep(0, {
+        status: "success",
+        tone: "success",
+        message: `agent ${shortAddress(agentAccount.address)} registered`,
+        detail: `Per-tx cap: ${formatUsdc(perTxCap)} mUSDC · Daily cap: ${formatUsdc(dailyCap)} mUSDC · Approval threshold: ${formatUsdc(approvalThreshold)} mUSDC · Whitelist: off`,
+        txHashes: [
+          { label: "fund gas", hash: fundHash },
+          { label: "register", hash: regHash },
+        ],
+      });
 
       // The agent signs its own spend() calls directly - Door 1, no human in this loop.
       const agentClient = createWalletClient({
@@ -103,16 +116,17 @@ export function DemoPanel() {
           ["SpendExecuted", "SpendBlocked", "SpendRequested"].includes(l.eventName)
         );
 
+        const txHashes = [{ label: "spend", hash }];
         if (parsed?.eventName === "SpendExecuted") {
-          updateStep(i, { status: "success", tone: "success", message: "SpendExecuted - funds moved", txHash: hash });
+          updateStep(i, { status: "success", tone: "success", message: "SpendExecuted - funds moved", txHashes });
         } else if (parsed?.eventName === "SpendBlocked") {
           const reason = (parsed.args as { reason: string }).reason;
-          updateStep(i, { status: "success", tone: "neutral", message: `SpendBlocked - "${reason}"`, txHash: hash });
+          updateStep(i, { status: "success", tone: "neutral", message: `SpendBlocked - "${reason}"`, txHashes });
         } else if (parsed?.eventName === "SpendRequested") {
           const id = (parsed.args as { id: bigint }).id;
-          updateStep(i, { status: "success", tone: "warning", message: `SpendRequested - queued as #${id} for your approval`, txHash: hash });
+          updateStep(i, { status: "success", tone: "warning", message: `SpendRequested - queued as #${id} for your approval`, txHashes });
         } else {
-          updateStep(i, { status: "success", tone: "neutral", message: "no recognized event emitted", txHash: hash });
+          updateStep(i, { status: "success", tone: "neutral", message: "no recognized event emitted", txHashes });
         }
       }
     } catch (err) {
@@ -140,21 +154,24 @@ export function DemoPanel() {
         </p>
         {steps.map((step, i) => (
           <div key={i} className="flex items-start justify-between gap-3 rounded-xl border border-overlay/8 bg-surface-2/40 px-4 py-3">
-            <div>
+            <div className="min-w-0">
               <p className="text-sm text-ink">{step.label}</p>
-              {step.message ? (
-                step.txHash ? (
-                  <a
-                    href={explorerTxUrl(step.txHash)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 inline-block text-xs text-muted hover:text-ink"
-                  >
-                    {step.message}
-                  </a>
-                ) : (
-                  <p className="mt-1 text-xs text-muted">{step.message}</p>
-                )
+              {step.message ? <p className="mt-1 text-xs text-muted">{step.message}</p> : null}
+              {step.detail ? <p className="mt-1 text-xs text-faint">{step.detail}</p> : null}
+              {step.txHashes?.length ? (
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {step.txHashes.map((t) => (
+                    <a
+                      key={t.hash}
+                      href={explorerTxUrl(t.hash)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono text-[11px] text-faint hover:text-primary"
+                    >
+                      {t.label}: {shortAddress(t.hash, 6)}
+                    </a>
+                  ))}
+                </div>
               ) : null}
             </div>
             {step.status === "running" ? (
