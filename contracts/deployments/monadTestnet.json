@@ -1,0 +1,11 @@
+{
+  "network": "monadTestnet",
+  "chainId": "10143",
+  "deployedAt": "2026-07-04T09:00:15.427Z",
+  "owner": "0xe701C317d677F9C54ACf59b5a5dbaDCfAa0AF2e0",
+  "entryPoint": "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
+  "contracts": {
+    "MockUSDC": "0x506AD0B4b5eFeBc33ca2501fBCF1C8c2fFEFD599",
+    "AgentVault": "0x1aFd84580730D88Dc52fE2AE04c006a5d002f861"
+  }
+}
