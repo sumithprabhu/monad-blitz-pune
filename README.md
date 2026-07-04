@@ -9,19 +9,19 @@
 ## Description
 
 Leash Protocol gives autonomous agents a cryptographic leash the owner holds. Agents can
-execute payments, but they never hold funds themselves — every spend is checked against an
+execute payments, but they never hold funds themselves. Every spend is checked against an
 on-chain policy before anything moves. One vault, one pooled balance, every user's funds and
 agents tracked separately, so a leaked or misbehaving agent key is bounded damage instead of
 a total, irreversible drain.
 
 ## Features
 
-- **Capped, not custodial** — per-transaction and daily caps mean a leaked agent key can only spend up to what you've allowed, never drain your balance.
-- **Whitelist-enforced** — recipients are pre-approved per agent, so a compromised key can't redirect funds anywhere else.
-- **Human-in-the-loop for big spends** — anything above the approval threshold queues for your sign-off instead of executing automatically.
-- **Vault-wide circuit breaker** — a rolling velocity cap auto-pauses an agent's activity on abnormal spend patterns, no human needed to notice first.
-- **Killable in one transaction** — revoking an agent freezes it and cancels its pending requests atomically.
-- **Full on-chain audit trail** — every executed, blocked, and queued spend is an event; the dashboard is reconstructed straight from logs, no database.
+- **Capped, not custodial**: per-transaction and daily caps mean a leaked agent key can only spend up to what you've allowed, never drain your balance.
+- **Whitelist-enforced**: recipients are pre-approved per agent, so a compromised key can't redirect funds anywhere else.
+- **Human-in-the-loop for big spends**: anything above the approval threshold queues for your sign-off instead of executing automatically.
+- **Vault-wide circuit breaker**: a rolling velocity cap auto-pauses an agent's activity on abnormal spend patterns, no human needed to notice first.
+- **Killable in one transaction**: revoking an agent freezes it and cancels its pending requests atomically.
+- **Full on-chain audit trail**: every executed, blocked, and queued spend is an event; the dashboard is reconstructed straight from logs, no database.
 
 ## Contract addresses
 
