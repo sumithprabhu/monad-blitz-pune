@@ -1,0 +1,29 @@
+node_modules/
+dist/
+
+# Hardhat
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/coverage/
+contracts/coverage.json
+contracts/deployments/localhost.json
+contracts/deployments/hardhat.json
+
+# env
+.env
+.env.local
+*/.env
+*/.env.local
+
+# Next.js
+dashboard/.next/
+dashboard/tsconfig.tsbuildinfo
+
+# misc
+.DS_Store
+*.log
+.claude/
+
+# stray build trace if next is ever run from repo root by mistake
+.next/
