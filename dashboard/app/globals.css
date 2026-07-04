@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-bg: 255 255 255;
+  --color-surface: 247 247 246;
+  --color-surface-2: 240 240 238;
+  --color-text: 12 11 15;
+  --color-text-muted: 87 86 90;
+  --color-text-faint: 138 137 132;
+  --color-primary: 131 110 249;
+  --color-primary-2: 91 63 217;
+  --color-success: 22 163 74;
+  --color-warning: 217 119 6;
+  --color-danger: 220 38 38;
+  --color-neutral: 113 113 122;
+  /* Neutral wash used for borders/hovers/subtle fills everywhere - black-based since
+   * the app is light-mode throughout. One token instead of hardcoded white/black per
+   * component means the whole app re-themes from this file alone if that ever changes. */
+  --color-overlay: 0 0 0;
+}
+
+* {
+  border-color: rgb(var(--color-overlay) / 0.08);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+}
+
+::selection {
+  background-color: rgb(var(--color-primary) / 0.35);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--color-text-faint) / 0.4);
+  border-radius: 9999px;
+}
+
+/* Hero illustration animations (components/landing/HeroVisual.tsx) */
+@keyframes leash-flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+.animate-leash-flow {
+  animation: leash-flow 2.4s linear infinite;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+.animate-pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.animate-float-slow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: float-slow 2.6s ease-in-out infinite;
+}
+.animate-float-slower {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: float-slow 3.4s ease-in-out infinite;
+}
